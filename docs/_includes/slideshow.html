@@ -1,0 +1,58 @@
+<div id="gallery">
+</div>
+
+<script>
+    var xSlideshow = new Object();
+    xSlideshow.slideIndex = 1;
+    xSlideshow.slideInterval = 3;
+    xSlideshow.currentSlideInterval = xSlideshow.slideInterval;
+    
+    $(document).ready(function() {
+        xSlideshow.onStart();
+    });
+    
+    xSlideshow.onStart = function() {
+        xSlideshow.createSlideshow();
+        xSlideshow.showDivs(xSlideshow.slideIndex);
+        xSlideshow.intervalChange();
+    };
+    
+    xSlideshow.createSlideshow = function(){ 
+        var slideshowContent = "{% for image in include.images %}" + 
+                                    "<img class=\"mySlides\" src=\"{{ image }}\">" + 
+                               "{% endfor %}" +
+                               "<button onclick=\"xSlideshow.plusDivs(-1)\">❮</button>" +
+                               "<button onclick=\"xSlideshow.plusDivs(1)\">❯</button>";
+        $("#gallery").append(slideshowContent);
+    };
+    
+    xSlideshow.intervalChange = function() {
+        xSlideshow.currentSlideInterval--;
+        if(xSlideshow.currentSlideInterval == 0) {
+            xSlideshow.plusDivs(1);
+            xSlideshow.currentSlideInterval = xSlideshow.slideInterval;
+        }
+        
+        setTimeout(xSlideshow.intervalChange, 1000);
+    };
+    
+    xSlideshow.plusDivs = function(n) {
+        xSlideshow.showDivs(xSlideshow.slideIndex += n);
+        xSlideshow.currentSlideInterval = xSlideshow.slideInterval;
+    };
+    
+    xSlideshow.showDivs = function(n){
+        var i;
+        var x = document.getElementsByClassName("mySlides");
+        if (n > x.length)
+            xSlideshow.slideIndex = 1;
+        
+        if (n < 1)
+            xSlideshow.slideIndex = x.length;
+        
+        for (i = 0; i < x.length; i++) {
+            x[i].style.display = "none";
+        }
+        x[xSlideshow.slideIndex-1].style.display = "block";
+    };
+</script>
